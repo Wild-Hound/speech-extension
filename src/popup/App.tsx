@@ -1,45 +1,92 @@
 import React from "react";
 import styled from "styled-components";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlay, faPause, faStop } from "@fortawesome/free-solid-svg-icons";
+
+const playColor = "#2ecc71";
+const pauseColor = "#3498db";
+const stopColor = "#e74c3c";
+const hoverColor = "#34495e";
+
+const playIcon = <FontAwesomeIcon icon={faPlay} />;
+const pauseIcon = <FontAwesomeIcon icon={faPause} />;
+const stopIcon = <FontAwesomeIcon icon={faStop} />;
 
 const GlobalWrapper = styled("div")`
   width: 200px;
   min-width: fit-content;
-  /* background-color: #2f3542; */
+  background-color: #2c3e50;
   padding: 1rem;
 `;
-const Title = styled("h2")`
-  margin: 0;
-  font-size: 1.25rem;
-  color: #2f3542;
-  text-align: center;
-`;
-const SiteInput = styled("div")`
-  margin: 1rem 0;
+const BtnGroup = styled("div")`
   display: flex;
-  /* align-items: end; */
-  > button {
-    padding: 0.25rem;
-    font-size: 0.85rem;
-    cursor: pointer;
+  justify-content: center;
+  align-items: center;
+`;
+const PlayBtn = styled("button")`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: transparent;
+  height: 2.5rem;
+  width: 2.5rem;
+  color: ${playColor};
+  border: 1px solid ${playColor};
+  border-radius: 22px;
+  padding-right: 0.25rem;
+  transition: all 0.35s;
+  margin: 0 1rem;
+  &:hover {
+    background-color: ${playColor};
+    color: ${hoverColor};
   }
-  > input {
-    font-size: 1.25rem;
+`;
+
+const PauseBtn = styled("button")`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: transparent;
+  height: 2rem;
+  width: 2rem;
+  color: ${pauseColor};
+  border: 1px solid ${pauseColor};
+  border-radius: 22px;
+  transition: all 0.35s;
+  &:hover {
+    background-color: ${pauseColor};
+    color: ${hoverColor};
+  }
+`;
+
+const StopBtn = styled("button")`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: transparent;
+  height: 2rem;
+  width: 2rem;
+  color: ${stopColor};
+  border: 1px solid ${stopColor};
+  border-radius: 22px;
+  transition: all 0.35s;
+  &:hover {
+    background-color: ${stopColor};
+    color: ${hoverColor};
   }
 `;
 
 const App = () => {
   return (
     <GlobalWrapper>
-      <Title>Atomic Habit</Title>
-      <SiteInput>
-        <input type="text" />
-        <button>
-          <AddCircleOutlineIcon />
-        </button>
-      </SiteInput>
+      <BtnGroup>
+        <PauseBtn>{pauseIcon}</PauseBtn>
+        <PlayBtn>{playIcon}</PlayBtn>
+        <StopBtn>{stopIcon}</StopBtn>
+      </BtnGroup>
     </GlobalWrapper>
   );
 };
