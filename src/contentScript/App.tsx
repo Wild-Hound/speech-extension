@@ -42,7 +42,7 @@ const App = () => {
 
   useEffect(() => {
     const host = window.location.hostname;
-    if (host === "www.google.com") {
+    if (host === "www.facebook.com") {
       setLoading(false);
       setUnSupported(true);
     } else {
