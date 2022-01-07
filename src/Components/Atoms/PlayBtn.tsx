@@ -1,6 +1,10 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import styled from "styled-components";
 import { hoverColor, playColor } from "../Utils/Colors";
+
+interface Props {
+  func: Function;
+}
 
 const Wrapper = styled("button")`
   display: flex;
@@ -8,23 +12,21 @@ const Wrapper = styled("button")`
   align-items: center;
   cursor: pointer;
   background-color: transparent;
-  height: 2.5rem;
-  width: 2.5rem;
+  height: 40px;
+  width: 40px;
   color: ${playColor};
   border: 1px solid ${playColor};
   border-radius: 22px;
   transition: all 0.35s;
-  margin: 0 1rem;
+  margin: 0 16px;
   &:hover {
     background-color: ${playColor};
     color: ${hoverColor};
   }
 `;
 
-interface Props {}
-
-const PlayBtn: React.FC<Props> = ({ children }) => {
-  return <Wrapper>{children}</Wrapper>;
+const PlayBtn: React.FC<Props> = ({ children, func }) => {
+  return <Wrapper onClick={(e) => func()}>{children}</Wrapper>;
 };
 
 export default PlayBtn;

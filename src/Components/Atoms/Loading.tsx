@@ -7,9 +7,9 @@ import { primaryText } from "../Utils/Colors";
 const Wrapper = styled.div`
   background-color: #2c3e50;
   width: 200px;
-  font-size: 2.5rem;
+  font-size: 40px;
   text-align: center;
-  padding: 1rem 0;
+  padding: 16px 0;
   color: ${primaryText};
 `;
 

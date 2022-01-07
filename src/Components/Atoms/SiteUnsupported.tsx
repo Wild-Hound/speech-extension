@@ -5,7 +5,7 @@ import { primaryText } from "../Utils/Colors";
 const Wrapper = styled.div`
   background-color: #2f3640;
   min-width: fit-content;
-  font-size: 1.15rem;
+  font-size: 18px;
   color: ${primaryText};
 `;
 

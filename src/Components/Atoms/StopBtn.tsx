@@ -8,8 +8,8 @@ const Wrapper = styled("button")`
   align-items: center;
   cursor: pointer;
   background-color: transparent;
-  height: 2rem;
-  width: 2rem;
+  height: 32px;
+  width: 32px;
   color: ${stopColor};
   border: 1px solid ${stopColor};
   border-radius: 22px;

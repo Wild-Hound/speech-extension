@@ -8,6 +8,7 @@ import StopBtn from "../Components/Atoms/StopBtn";
 import SiteUnsupported from "../Components/Atoms/SiteUnsupported";
 import { primaryText } from "../Components/Utils/Colors";
 import Loading from "../Components/Atoms/Loading";
+import { playAudio } from "./Mech";
 
 const playIcon = <FontAwesomeIcon icon={faPlay} />;
 const pauseIcon = <FontAwesomeIcon icon={faPause} />;
@@ -16,10 +17,10 @@ const stopIcon = <FontAwesomeIcon icon={faStop} />;
 const Wrapper = styled("div")`
   min-width: fit-content;
   background-color: #2c3e50;
-  padding: 1rem;
+  padding: 16px;
   position: fixed;
-  bottom: 3rem;
-  right: 3rem;
+  bottom: 48px;
+  right: 48px;
   border-radius: 5px;
 `;
 const BtnGroup = styled("div")`
@@ -28,10 +29,10 @@ const BtnGroup = styled("div")`
   align-items: center;
 `;
 const SpeechTime = styled.div`
-  font-size: 1.5rem;
+  font-size: 24px;
   font-family: sans-serif;
   text-align: center;
-  margin-bottom: 1.15rem;
+  margin-bottom: 24px;
   color: ${primaryText};
 `;
 
@@ -41,8 +42,6 @@ const App = () => {
 
   useEffect(() => {
     const host = window.location.hostname;
-    console.log(host);
-    console.log("hello world");
     if (host === "www.google.com") {
       setLoading(false);
       setUnSupported(true);
@@ -64,7 +63,7 @@ const App = () => {
         <SpeechTime>3:23</SpeechTime>
         <BtnGroup>
           <PauseBtn>{pauseIcon}</PauseBtn>
-          <PlayBtn>{playIcon}</PlayBtn>
+          <PlayBtn func={playAudio}>{playIcon}</PlayBtn>
           <StopBtn>{stopIcon}</StopBtn>
         </BtnGroup>
       </>
