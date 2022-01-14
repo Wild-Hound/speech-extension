@@ -8,7 +8,8 @@ import StopBtn from "../Components/Atoms/StopBtn";
 import SiteUnsupported from "../Components/Atoms/SiteUnsupported";
 import { primaryText } from "../Components/Utils/Colors";
 import Loading from "../Components/Atoms/Loading";
-import { playAudio } from "./Mech";
+import { playAudio } from "../Components/Utils/Functions/PlayAudio";
+import { metaData } from "../Components/Utils/Types";
 
 const playIcon = <FontAwesomeIcon icon={faPlay} />;
 const pauseIcon = <FontAwesomeIcon icon={faPause} />;
@@ -39,6 +40,7 @@ const SpeechTime = styled.div`
 const App = () => {
   const [unSupported, setUnSupported] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [metaData, setMetaData] = useState<metaData>();
 
   useEffect(() => {
     const host = window.location.hostname;
@@ -50,6 +52,14 @@ const App = () => {
       setUnSupported(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (!metaData) {
+      return;
+    }
+
+    console.log(metaData);
+  }, [metaData]);
 
   function init() {
     return unSupported ? (
@@ -63,7 +73,11 @@ const App = () => {
         <SpeechTime>3:23</SpeechTime>
         <BtnGroup>
           <PauseBtn>{pauseIcon}</PauseBtn>
-          <PlayBtn callBack={playAudio} setLoading={setLoading}>
+          <PlayBtn
+            callBack={playAudio}
+            setLoading={setLoading}
+            setMetadata={setMetaData}
+          >
             {playIcon}
           </PlayBtn>
           <StopBtn>{stopIcon}</StopBtn>

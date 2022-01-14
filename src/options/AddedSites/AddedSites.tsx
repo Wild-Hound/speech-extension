@@ -46,7 +46,6 @@ const AddedSites = () => {
 
   useEffect(() => {
     setItems(fakeData);
-    // console.log(fakeData);
   }, []);
 
   function getItems() {
