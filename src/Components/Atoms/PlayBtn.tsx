@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { hoverColor, playColor } from "../Utils/Colors";
 
 interface Props {
-  func: Function;
+  callBack: (setLoading: React.Dispatch<React.SetStateAction<boolean>>) => void;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Wrapper = styled("button")`
@@ -25,8 +26,8 @@ const Wrapper = styled("button")`
   }
 `;
 
-const PlayBtn: React.FC<Props> = ({ children, func }) => {
-  return <Wrapper onClick={(e) => func()}>{children}</Wrapper>;
+const PlayBtn: React.FC<Props> = ({ children, callBack, setLoading }) => {
+  return <Wrapper onClick={(e) => callBack(setLoading)}>{children}</Wrapper>;
 };
 
 export default PlayBtn;

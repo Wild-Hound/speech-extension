@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { primaryText } from "../Utils/Colors";
+import ReactLoading from "react-loading";
 
 const Wrapper = styled.div`
   background-color: #2c3e50;
@@ -11,23 +12,20 @@ const Wrapper = styled.div`
   text-align: center;
   padding: 16px 0;
   color: ${primaryText};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 `;
-
-const Spinner = styled.div`
-  animation: spin 2s linear infinite;
-  @keyframes spin {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`;
-
-const spinnerIcon = <FontAwesomeIcon icon={faSpinner} />;
 
 const Loading = () => {
   return (
     <Wrapper>
-      <Spinner>{spinnerIcon}</Spinner>
+      <ReactLoading type="spin" color="#1abc9c" height={65} width={65} />
     </Wrapper>
   );
 };

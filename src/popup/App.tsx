@@ -27,7 +27,7 @@ const App = () => {
     <GlobalWrapper>
       <BtnGroup>
         <PauseBtn>{pauseIcon}</PauseBtn>
-        <PlayBtn>{playIcon}</PlayBtn>
+        {/* <PlayBtn>{playIcon}</PlayBtn> */}
         <StopBtn>{stopIcon}</StopBtn>
       </BtnGroup>
     </GlobalWrapper>

@@ -52,18 +52,20 @@ const App = () => {
   }, []);
 
   function init() {
-    if (loading) {
-      return <Loading />;
-    }
-
     return unSupported ? (
-      <SiteUnsupported />
+      <>
+        {loading && <Loading />}
+        <SiteUnsupported />
+      </>
     ) : (
       <>
+        {loading && <Loading />}
         <SpeechTime>3:23</SpeechTime>
         <BtnGroup>
           <PauseBtn>{pauseIcon}</PauseBtn>
-          <PlayBtn func={playAudio}>{playIcon}</PlayBtn>
+          <PlayBtn callBack={playAudio} setLoading={setLoading}>
+            {playIcon}
+          </PlayBtn>
           <StopBtn>{stopIcon}</StopBtn>
         </BtnGroup>
       </>

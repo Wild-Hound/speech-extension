@@ -1,4 +1,6 @@
-export const playAudio = () => {
+export const playAudio = (
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+) => {
   const data = {
     text: `Nice to meet you, where you been?
     I could show you incredible things
@@ -17,6 +19,8 @@ export const playAudio = () => {
     I can make the bad guys good for a weekend`,
   };
 
+  setLoading(true);
+
   fetch("https://tts-api-404.herokuapp.com/tts", {
     method: "POST",
     headers: {
@@ -34,6 +38,7 @@ export const playAudio = () => {
       }
     })
     .then((data) => {
+      setLoading(false);
       if (data === undefined) {
         return;
       }
