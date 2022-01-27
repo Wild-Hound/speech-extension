@@ -72,6 +72,9 @@ export function playAudio(
 
   setLoading(true);
 
+  const textContent = getContent();
+  const TextContentArray = textContent.match(/.{1,1450}/g);
+
   const cred = new AWS.Credentials({
     accessKeyId: process.env.ACCESS_KEY,
     secretAccessKey: process.env.SECRET_ACCESS_KEY,
@@ -80,7 +83,7 @@ export function playAudio(
   const polly = new AWS.Polly({ credentials: cred, region: "us-west-2" });
   const params = {
     OutputFormat: "mp3",
-    Text: largeText,
+    Text: TextContentArray[0],
     TextType: "text",
     VoiceId: "Joanna",
   };

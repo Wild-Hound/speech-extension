@@ -1,35 +1,9 @@
-// function getContent() {
-//   const x = document.body.childNodes;
-//   const contentText = [];
-
-//   x.forEach((node) => {
-//     //   @ts-ignore
-//     if (!node.tagName || node.tagName === "SCRIPT") {
-//       return;
-//     }
-//     traverseNode(node);
-//   });
-
-//   function traverseNode(node) {
-//     const childs = node.childNodes;
-//     if (childs.length > 0) {
-//       childs.forEach((childNode) => traverseNode(childNode));
-//     }
-
-//     if (node.nodeType == Node.TEXT_NODE) {
-//       const nodeText = `${node.innerText}`;
-//       if (nodeText.length > 1) {
-//         contentText.push(nodeText);
-//       }
-//     }
-//   }
-//   console.log(contentText.join("\n"));
-// }
-
 export function getContent() {
+  console.log("clicked");
+
   const blackListedNodes = ["SCRIPT", "NOSCRIPT"];
   const borderStyle = "1px solid #000";
-  const elementArr = document.querySelector("article");
+  const element = document.querySelector("article");
 
   const textArr: string[] = [];
 
@@ -38,24 +12,26 @@ export function getContent() {
       return;
     }
 
-    if (node?.style) {
-      (node as HTMLDivElement).style.border = borderStyle;
-    }
-
     const childs = node.childNodes;
     if (childs.length > 0) {
       childs.forEach((childNode) => traverseNode(childNode));
     }
 
+    if (node?.style) {
+    }
+
     if (node.nodeType == Node.TEXT_NODE) {
-      // console.log(node);
       const nodeText = `${node.textContent}`;
+
       if (nodeText.length > 1) {
         textArr.push(`${nodeText}`);
+
+        // @ts-ignore
+        (node as HTMLElement).parentNode.style.border = borderStyle;
       }
     }
   }
 
-  traverseNode(elementArr);
-  return textArr.join("\n");
+  traverseNode(element);
+  return textArr.join("");
 }

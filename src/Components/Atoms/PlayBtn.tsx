@@ -1,15 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { hoverColor, playColor } from "../Utils/Colors";
-import { metaData } from "../Utils/Types";
 
 interface Props {
-  callBack: (
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    setMetaData: React.Dispatch<React.SetStateAction<metaData>>
-  ) => void;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  setMetadata: React.Dispatch<React.SetStateAction<metaData>>;
+  callBack: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 const Wrapper = styled("button")`
@@ -31,17 +25,8 @@ const Wrapper = styled("button")`
   }
 `;
 
-const PlayBtn: React.FC<Props> = ({
-  children,
-  callBack,
-  setLoading,
-  setMetadata,
-}) => {
-  return (
-    <Wrapper onClick={(e) => callBack(setLoading, setMetadata)}>
-      {children}
-    </Wrapper>
-  );
+const PlayBtn: React.FC<Props> = ({ children, callBack }) => {
+  return <Wrapper onClick={callBack}>{children}</Wrapper>;
 };
 
 export default PlayBtn;
