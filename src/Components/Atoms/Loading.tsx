@@ -7,19 +7,20 @@ import ReactLoading from "react-loading";
 
 const Wrapper = styled.div`
   background-color: #2c3e50;
-  width: 200px;
-  font-size: 40px;
+  width: 150px;
+  font-size: 32px;
   text-align: center;
   padding: 16px 0;
   color: ${primaryText};
-  display: flex;
-  justify-content: center;
-  align-items: center;
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
+  min-height: fit-content;
+  > div {
+    margin: auto;
+  }
 `;
 
 const Loading = () => {

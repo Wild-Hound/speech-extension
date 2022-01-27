@@ -10,6 +10,7 @@ module.exports = {
     backgroundScript: path.resolve("src/backgroundScript/backgroundScript.ts"),
     contentScript: path.resolve("src/contentScript/contentScript.tsx"),
   },
+
   module: {
     rules: [
       {

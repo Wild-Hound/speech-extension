@@ -20,8 +20,12 @@ const Wrapper = styled("button")`
   }
 `;
 
-const PauseBtn: React.FC = ({ children }) => {
-  return <Wrapper>{children}</Wrapper>;
+interface Props {
+  callback: React.MouseEventHandler<HTMLButtonElement>;
+}
+
+const PauseBtn: React.FC<Props> = ({ children, callback }) => {
+  return <Wrapper onClick={callback}>{children}</Wrapper>;
 };
 
 export default PauseBtn;

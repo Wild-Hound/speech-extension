@@ -10,6 +10,7 @@ import { primaryText } from "../Components/Utils/Colors";
 import Loading from "../Components/Atoms/Loading";
 import { playAudio } from "../Components/Utils/Functions/PlayAudio";
 import { metaData } from "../Components/Utils/Types";
+import { pauseAudio } from "../Components/Utils/Functions/PauseAudio";
 
 const playIcon = <FontAwesomeIcon icon={faPlay} />;
 const pauseIcon = <FontAwesomeIcon icon={faPause} />;
@@ -29,18 +30,12 @@ const BtnGroup = styled("div")`
   justify-content: center;
   align-items: center;
 `;
-const SpeechTime = styled.div`
-  font-size: 24px;
-  font-family: sans-serif;
-  text-align: center;
-  margin-bottom: 24px;
-  color: ${primaryText};
-`;
 
 const App = () => {
   const [unSupported, setUnSupported] = useState(false);
   const [loading, setLoading] = useState(true);
   const [metaData, setMetaData] = useState<metaData>();
+  const [playing, setPlaying] = useState();
 
   useEffect(() => {
     const host = window.location.hostname;
@@ -69,19 +64,27 @@ const App = () => {
       </>
     ) : (
       <>
-        {loading && <Loading />}
-        <SpeechTime>3:23</SpeechTime>
-        <BtnGroup>
-          <PauseBtn>{pauseIcon}</PauseBtn>
-          <PlayBtn
-            callBack={playAudio}
-            setLoading={setLoading}
-            setMetadata={setMetaData}
-          >
-            {playIcon}
-          </PlayBtn>
-          <StopBtn>{stopIcon}</StopBtn>
-        </BtnGroup>
+        <Wrapper>
+          {loading && <Loading />}
+          {playing ? (
+            <PauseBtn callback={() => pauseAudio(setPlaying)}>
+              {pauseIcon}
+            </PauseBtn>
+          ) : (
+            <PlayBtn
+              callBack={() =>
+                playAudio(loading, playing, setLoading, setPlaying)
+              }
+              setLoading={setLoading}
+              setMetadata={setMetaData}
+            >
+              {playIcon}
+            </PlayBtn>
+          )}
+        </Wrapper>
+        <audio id="audio">
+          <source className="track" src="" type="audio/mpeg" />
+        </audio>
       </>
     );
   }
