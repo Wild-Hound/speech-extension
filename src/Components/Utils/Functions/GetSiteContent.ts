@@ -1,6 +1,4 @@
 export function getContent() {
-  console.log("clicked");
-
   const blackListedNodes = ["SCRIPT", "NOSCRIPT"];
   const borderStyle = "1px solid #000";
   const element = document.querySelector("article");
@@ -34,4 +32,5 @@ export function getContent() {
 
   traverseNode(element);
   return textArr.join("");
+  // return "hello World";
 }

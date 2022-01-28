@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import PlayBtn from "../Components/Atoms/PlayBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,7 +27,11 @@ const Wrapper = styled("div")`
 const App = () => {
   const [unSupported, setUnSupported] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [playing, setPlaying] = useState();
+  const [playing, setPlaying] = useState<boolean>();
+  const [audioEnded, setAudioEnded] = useState(false);
+  const [audioBlobUrlArray, setAudioBlobUrlArray] = useState<string[]>([]);
+  const [audioIndex, setAudioIndex] = useState(0);
+  // const audioRef = useRef();
 
   useEffect(() => {
     const host = window.location.hostname;
@@ -39,6 +43,28 @@ const App = () => {
       setUnSupported(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (audioBlobUrlArray.length === 0) {
+      return;
+    }
+
+    const audio = document.getElementById("audio");
+    console.log("playing", audioBlobUrlArray[audioIndex]);
+
+    (audio as HTMLAudioElement).src = audioBlobUrlArray[audioIndex];
+    (audio as HTMLAudioElement).play();
+  }, [audioIndex, audioBlobUrlArray.length]);
+
+  useEffect(() => {
+    if (!audioEnded) {
+      return;
+    }
+
+    setPlaying(false);
+    setAudioEnded(false);
+    setAudioIndex(audioIndex + 1);
+  }, [audioEnded]);
 
   function init() {
     return unSupported ? (
@@ -57,7 +83,14 @@ const App = () => {
           ) : (
             <PlayBtn
               callBack={() => {
-                playAudio(loading, playing, setLoading, setPlaying);
+                playAudio(
+                  loading,
+                  playing,
+                  audioBlobUrlArray,
+                  setLoading,
+                  setPlaying,
+                  setAudioBlobUrlArray
+                );
                 getContent();
               }}
             >
@@ -65,7 +98,12 @@ const App = () => {
             </PlayBtn>
           )}
         </Wrapper>
-        <audio id="audio">
+        <audio
+          id="audio"
+          onEnded={() => {
+            setAudioEnded(true);
+          }}
+        >
           <source className="track" src="" type="audio/mpeg" />
         </audio>
       </>
