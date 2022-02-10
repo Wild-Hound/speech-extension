@@ -5,19 +5,25 @@ import AWS from "aws-sdk";
 export async function playAudio(
   loading: boolean,
   playing: boolean,
-  audioBlobUrlArray: string[],
+  audioBlobUrlArray: {
+    [index: string]: string;
+  },
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setPlaying: React.Dispatch<React.SetStateAction<boolean>>,
-  setAudioBlobUrlArray: React.Dispatch<React.SetStateAction<string[]>>
+  setAudioBlobUrlArray: React.Dispatch<
+    React.SetStateAction<{
+      [index: string]: string;
+    }>
+  >
 ) {
   if (loading) {
     return;
   }
 
-  const audio = document.getElementById("audio");
+  const audio = document.getElementById("audio") as HTMLAudioElement;
 
-  if ((audio as HTMLAudioElement).paused && playing === false) {
-    (audio as HTMLAudioElement).play();
+  if (audio.paused && playing === false) {
+    audio.play();
     setPlaying(true);
     return;
   }
@@ -33,9 +39,9 @@ export async function playAudio(
   });
 
   const polly = new AWS.Polly({ credentials: cred, region: "us-west-2" });
-  const audioBlobArray = [];
+  const audioBlobArray = {};
 
-  await TextContentArray.forEach(async (text) => {
+  TextContentArray.forEach(async (text, index) => {
     const params = {
       OutputFormat: "mp3",
       Text: text,
@@ -43,7 +49,7 @@ export async function playAudio(
       VoiceId: "Joanna",
     };
 
-    await polly.synthesizeSpeech(params, (err, data) => {
+    polly.synthesizeSpeech(params, (err, data) => {
       if (err) {
         console.log(err, err.stack);
         setLoading(false);
@@ -61,13 +67,16 @@ export async function playAudio(
 
       const url = URL.createObjectURL(blob);
 
-      audioBlobArray.push(url);
+      // audioBlobArray.push(url);
+      audioBlobArray[index] = url;
       // (audio as HTMLAudioElement).src = url;
       // (audio as HTMLAudioElement).play();
       setLoading(false);
       setPlaying(true);
     });
   });
+
+  console.log(audioBlobArray);
 
   setAudioBlobUrlArray(audioBlobArray);
 }

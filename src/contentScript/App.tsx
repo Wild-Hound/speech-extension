@@ -10,6 +10,7 @@ import { playAudio } from "../Components/Utils/Functions/PlayAudio";
 import { metaData } from "../Components/Utils/Types";
 import { pauseAudio } from "../Components/Utils/Functions/PauseAudio";
 import { getContent } from "../Components/Utils/Functions/GetSiteContent";
+import { usePlayAudio } from "../Components/Utils/Functions/fetchHools";
 
 const playIcon = <FontAwesomeIcon icon={faPlay} />;
 const pauseIcon = <FontAwesomeIcon icon={faPause} />;
@@ -22,16 +23,18 @@ const Wrapper = styled("div")`
   bottom: 48px;
   right: 48px;
   border-radius: 5px;
+  z-index: 1000;
 `;
 
 const App = () => {
   const [unSupported, setUnSupported] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState<boolean>();
   const [audioEnded, setAudioEnded] = useState(false);
-  const [audioBlobUrlArray, setAudioBlobUrlArray] = useState<string[]>([]);
   const [audioIndex, setAudioIndex] = useState(0);
-  // const audioRef = useRef();
+  const [webContent, setWebContent] = useState<string>();
+
+  usePlayAudio(webContent);
 
   useEffect(() => {
     const host = window.location.hostname;
@@ -43,18 +46,6 @@ const App = () => {
       setUnSupported(false);
     }
   }, []);
-
-  useEffect(() => {
-    if (audioBlobUrlArray.length === 0) {
-      return;
-    }
-
-    const audio = document.getElementById("audio");
-    console.log("playing", audioBlobUrlArray[audioIndex]);
-
-    (audio as HTMLAudioElement).src = audioBlobUrlArray[audioIndex];
-    (audio as HTMLAudioElement).play();
-  }, [audioIndex, audioBlobUrlArray.length]);
 
   useEffect(() => {
     if (!audioEnded) {
@@ -83,15 +74,8 @@ const App = () => {
           ) : (
             <PlayBtn
               callBack={() => {
-                playAudio(
-                  loading,
-                  playing,
-                  audioBlobUrlArray,
-                  setLoading,
-                  setPlaying,
-                  setAudioBlobUrlArray
-                );
-                getContent();
+                const textContent = getContent();
+                setWebContent(textContent);
               }}
             >
               {playIcon}

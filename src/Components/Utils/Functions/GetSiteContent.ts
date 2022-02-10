@@ -32,5 +32,4 @@ export function getContent() {
 
   traverseNode(element);
   return textArr.join("");
-  // return "hello World";
 }
