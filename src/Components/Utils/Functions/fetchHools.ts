@@ -1,10 +1,15 @@
 import AWS from "aws-sdk";
 import { useEffect, useState } from "react";
 
-export function usePlayAudio(contentText: string) {
+export function usePlayAudio(
+  contentText: string,
+  setPlaying: React.Dispatch<React.SetStateAction<boolean>>,
+  audioRef: React.MutableRefObject<HTMLAudioElement>
+) {
   const [audioBlobObj, setAudioBlobObj] = useState<any>([]);
   const [triggerPlay, setTriggerPlay] = useState(false);
   const [audioIndex, setAudioIndex] = useState(0);
+  const [playNext, setPlayNext] = useState(false);
 
   useEffect(() => {
     if (!contentText) {
@@ -53,19 +58,39 @@ export function usePlayAudio(contentText: string) {
     if (!triggerPlay) {
       return;
     }
-    const audio = document.getElementById("audio") as HTMLAudioElement;
 
     audioBlobObj.forEach((element) => {
       if (element.key === audioIndex) {
-        audio.src = audioBlobObj[audioIndex].url;
+        audioRef.current.src = element.url;
         console.log("playing", audioIndex);
       }
     });
 
-    audio.play();
-
-    console.log(audioBlobObj);
-
+    audioRef.current.play();
+    audioRef.current.onended = () => {
+      setPlayNext(true);
+    };
+    setPlaying(true);
     setTriggerPlay(false);
   }, [triggerPlay]);
+
+  useEffect(() => {
+    if (!playNext) {
+      return;
+    }
+
+    const nextIndex = audioIndex + 1;
+
+    audioBlobObj.forEach((element) => {
+      if (element.key === nextIndex) {
+        audioRef.current.src = element.url;
+        audioRef.current.play();
+      }
+    });
+
+    setAudioIndex(nextIndex);
+    setPlayNext(false);
+
+    console.log("playing next");
+  }, [playNext]);
 }

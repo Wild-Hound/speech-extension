@@ -2,12 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import PlayBtn from "../Components/Atoms/PlayBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay, faPause, faStop } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
 import PauseBtn from "../Components/Atoms/PauseBtn";
-import SiteUnsupported from "../Components/Atoms/SiteUnsupported";
-import Loading from "../Components/Atoms/Loading";
-import { playAudio } from "../Components/Utils/Functions/PlayAudio";
-import { metaData } from "../Components/Utils/Types";
 import { pauseAudio } from "../Components/Utils/Functions/PauseAudio";
 import { getContent } from "../Components/Utils/Functions/GetSiteContent";
 import { usePlayAudio } from "../Components/Utils/Functions/fetchHools";
@@ -27,74 +23,41 @@ const Wrapper = styled("div")`
 `;
 
 const App = () => {
-  const [unSupported, setUnSupported] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState<boolean>();
-  const [audioEnded, setAudioEnded] = useState(false);
-  const [audioIndex, setAudioIndex] = useState(0);
   const [webContent, setWebContent] = useState<string>();
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-  usePlayAudio(webContent);
+  usePlayAudio(webContent, setPlaying, audioRef);
 
-  useEffect(() => {
-    const host = window.location.hostname;
-    if (host === "www.facebook.com") {
-      setLoading(false);
-      setUnSupported(true);
-    } else {
-      setLoading(false);
-      setUnSupported(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!audioEnded) {
-      return;
-    }
-
-    setPlaying(false);
-    setAudioEnded(false);
-    setAudioIndex(audioIndex + 1);
-  }, [audioEnded]);
-
-  function init() {
-    return unSupported ? (
-      <>
-        {loading && <Loading />}
-        <SiteUnsupported />
-      </>
-    ) : (
-      <>
-        <Wrapper>
-          {loading && <Loading />}
-          {playing ? (
-            <PauseBtn callback={() => pauseAudio(setPlaying)}>
-              {pauseIcon}
-            </PauseBtn>
-          ) : (
-            <PlayBtn
-              callBack={() => {
-                const textContent = getContent();
-                setWebContent(textContent);
-              }}
-            >
-              {playIcon}
-            </PlayBtn>
-          )}
-        </Wrapper>
-        <audio
-          id="audio"
-          onEnded={() => {
-            setAudioEnded(true);
-          }}
-        >
+  return (
+    <Wrapper>
+      <Wrapper>
+        {playing ? (
+          <PauseBtn callback={() => pauseAudio(setPlaying)}>
+            {pauseIcon}
+          </PauseBtn>
+        ) : (
+          <PlayBtn
+            callBack={() => {
+              if (webContent && audioRef.current.paused) {
+                console.log("playing");
+                audioRef.current.play();
+                setPlaying(true);
+                return;
+              }
+              const textContent = getContent();
+              setWebContent(textContent);
+            }}
+          >
+            {playIcon}
+          </PlayBtn>
+        )}
+        <audio id="audio" onEnded={() => {}} ref={audioRef}>
           <source className="track" src="" type="audio/mpeg" />
         </audio>
-      </>
-    );
-  }
-
-  return <Wrapper>{init()}</Wrapper>;
+      </Wrapper>
+    </Wrapper>
+  );
 };
 
 export default App;
