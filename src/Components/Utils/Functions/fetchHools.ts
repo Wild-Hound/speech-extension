@@ -1,5 +1,6 @@
 import AWS from "aws-sdk";
 import { useEffect, useState } from "react";
+import { highlightText } from "./HighlightText";
 
 export function usePlayAudio(
   contentText: string,
@@ -10,6 +11,11 @@ export function usePlayAudio(
   const [triggeredInitPlay, setTriggeredInitPlay] = useState(false);
   const [audioIndex, setAudioIndex] = useState(0);
   const [playNext, setPlayNext] = useState(false);
+  const [initHtmlTree, setInitHtmlTree] = useState<HTMLElement>();
+
+  useEffect(() => {
+    setInitHtmlTree(document.querySelector("article"));
+  }, []);
 
   useEffect(() => {
     if (!contentText) {
@@ -70,6 +76,7 @@ export function usePlayAudio(
         audioRef.current.onended = () => {
           setPlayNext(true);
         };
+        highlightText(element.textContent, initHtmlTree);
         setPlaying(true);
         setTriggeredInitPlay(true);
       }
@@ -90,9 +97,9 @@ export function usePlayAudio(
         console.log(element.textContent);
         audioRef.current.src = element.url;
         audioRef.current.play();
+        highlightText(element.textContent, initHtmlTree);
       }
     });
-
     setAudioIndex(nextIndex);
     setPlayNext(false);
 
