@@ -7,7 +7,7 @@ export function usePlayAudio(
   audioRef: React.MutableRefObject<HTMLAudioElement>
 ) {
   const [audioBlobObj, setAudioBlobObj] = useState<any>([]);
-  const [triggerPlay, setTriggerPlay] = useState(false);
+  const [triggeredInitPlay, setTriggeredInitPlay] = useState(false);
   const [audioIndex, setAudioIndex] = useState(0);
   const [playNext, setPlayNext] = useState(false);
 
@@ -21,7 +21,8 @@ export function usePlayAudio(
       secretAccessKey: "B9aD88RLUZ/KVCcBfCjwBk/7NNHXIGOb0gWkK2G3",
     });
     const polly = new AWS.Polly({ credentials: cred, region: "us-west-2" });
-    const TextContentArray = contentText.match(/.{1,1450}/g);
+    // const TextContentArray = contentText.match(/.{1,1450}/g);
+    const TextContentArray = contentText.split(".");
     TextContentArray.forEach((text, index) => {
       const params = {
         OutputFormat: "mp3",
@@ -44,18 +45,19 @@ export function usePlayAudio(
 
         const tempState = audioBlobObj;
         console.log(index, url);
-        tempState.push({ url: url, key: index });
+        tempState.push({
+          url: url,
+          key: index,
+          textContent: TextContentArray[index],
+        });
         setAudioBlobObj([...tempState]);
-
-        if (TextContentArray.length === tempState.length) {
-          setTriggerPlay(true);
-        }
       });
     });
   }, [contentText]);
 
   useEffect(() => {
-    if (!triggerPlay) {
+    // !triggerPlay
+    if (!audioBlobObj || triggeredInitPlay) {
       return;
     }
 
@@ -63,16 +65,18 @@ export function usePlayAudio(
       if (element.key === audioIndex) {
         audioRef.current.src = element.url;
         console.log("playing", audioIndex);
+
+        audioRef.current.play();
+        audioRef.current.onended = () => {
+          setPlayNext(true);
+        };
+        setPlaying(true);
+        setTriggeredInitPlay(true);
       }
     });
 
-    audioRef.current.play();
-    audioRef.current.onended = () => {
-      setPlayNext(true);
-    };
-    setPlaying(true);
-    setTriggerPlay(false);
-  }, [triggerPlay]);
+    // triggerPlay
+  }, [audioBlobObj]);
 
   useEffect(() => {
     if (!playNext) {
@@ -83,6 +87,7 @@ export function usePlayAudio(
 
     audioBlobObj.forEach((element) => {
       if (element.key === nextIndex) {
+        console.log(element.textContent);
         audioRef.current.src = element.url;
         audioRef.current.play();
       }

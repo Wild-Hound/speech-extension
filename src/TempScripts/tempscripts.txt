@@ -1,0 +1,6 @@
+const pattern = new RegExp("sienna mae","gi")
+
+const source = document.querySelector("article")
+
+const temp = source.innerHTML.toString()
+source.innerHTML = temp.replace(pattern, match => `<mark>${match}</mark>`)
