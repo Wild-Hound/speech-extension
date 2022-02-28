@@ -25,11 +25,11 @@ export function getContent() {
         textArr.push(`${nodeText}`);
 
         // @ts-ignore
-        (node as HTMLElement).parentNode.style.border = borderStyle;
+        // (node as HTMLElement).parentNode.style.border = borderStyle;
       }
     }
   }
 
   traverseNode(element);
-  return textArr.join("");
+  return textArr.join("\n");
 }

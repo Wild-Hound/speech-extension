@@ -1,11 +1,15 @@
 import AWS from "aws-sdk";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { highlightText } from "./HighlightText";
 
 export function usePlayAudio(
   contentText: string,
   setPlaying: React.Dispatch<React.SetStateAction<boolean>>,
-  audioRef: React.MutableRefObject<HTMLAudioElement>
+  audioRef: React.MutableRefObject<HTMLAudioElement>,
+  incrementAudioIndex: boolean,
+  decrementAudioIndex: boolean,
+  etIncrementAudioIndex: React.Dispatch<React.SetStateAction<boolean>>,
+  setDecrementAudioIndex: React.Dispatch<React.SetStateAction<boolean>>
 ) {
   const [audioBlobObj, setAudioBlobObj] = useState<any>([]);
   const [triggeredInitPlay, setTriggeredInitPlay] = useState(false);
@@ -13,9 +17,10 @@ export function usePlayAudio(
   const [playNext, setPlayNext] = useState(false);
   const [initHtmlTree, setInitHtmlTree] = useState<HTMLElement>();
 
-  useEffect(() => {
+  useMemo(() => {
+    console.log("Oops!");
     setInitHtmlTree(document.querySelector("article"));
-  }, []);
+  }, [contentText]);
 
   useEffect(() => {
     if (!contentText) {
@@ -28,7 +33,16 @@ export function usePlayAudio(
     });
     const polly = new AWS.Polly({ credentials: cred, region: "us-west-2" });
     // const TextContentArray = contentText.match(/.{1,1450}/g);
-    const TextContentArray = contentText.split(".");
+    const TextContentArray = [];
+
+    contentText.split(".").forEach((content) => {
+      content.split("\n").forEach((text) => {
+        if (text.length > 1) {
+          TextContentArray.push(text);
+        }
+      });
+    });
+
     TextContentArray.forEach((text, index) => {
       const params = {
         OutputFormat: "mp3",
@@ -105,4 +119,51 @@ export function usePlayAudio(
 
     console.log("playing next");
   }, [playNext]);
+
+  useEffect(() => {
+    if (!incrementAudioIndex) {
+      return;
+    }
+
+    const nextIndex = audioIndex + 1;
+
+    audioBlobObj.forEach((element) => {
+      if (element.key === nextIndex) {
+        console.log(element.textContent);
+        audioRef.current.src = element.url;
+        audioRef.current.pause();
+        audioRef.current.play();
+        highlightText(element.textContent, initHtmlTree);
+      }
+    });
+    setAudioIndex(nextIndex);
+    setPlayNext(false);
+    etIncrementAudioIndex(false);
+  }, [incrementAudioIndex]);
+  useEffect(() => {
+    if (!decrementAudioIndex) {
+      return;
+    }
+
+    if (audioIndex === 0) {
+      setDecrementAudioIndex(false);
+      return;
+    }
+
+    const nextIndex = audioIndex - 1;
+
+    audioBlobObj.forEach((element) => {
+      if (element.key === nextIndex) {
+        console.log(element.textContent);
+        audioRef.current.src = element.url;
+        audioRef.current.pause();
+        audioRef.current.play();
+        highlightText(element.textContent, initHtmlTree);
+      }
+    });
+    setAudioIndex(nextIndex);
+    setPlayNext(false);
+
+    setDecrementAudioIndex(false);
+  }, [decrementAudioIndex]);
 }
