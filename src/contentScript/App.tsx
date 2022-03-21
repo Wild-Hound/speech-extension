@@ -134,7 +134,8 @@ const App = () => {
       return;
     }
     const textContent = getContent();
-    setWebContent(textContent);
+    console.log(textContent);
+    setWebContent(textContent[0]);
   };
 
   const pauseButtonAction = () => pauseAudio(setPlaying);

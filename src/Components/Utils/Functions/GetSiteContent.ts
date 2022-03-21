@@ -1,35 +1,76 @@
 export function getContent() {
-  const blackListedNodes = ["SCRIPT", "NOSCRIPT"];
-  const borderStyle = "1px solid #000";
-  const element = document.querySelector("article");
+  const hostName = window.location.hostname;
+  const elements: HTMLElement[] = [];
+  const contents: string[] = [];
 
-  const textArr: string[] = [];
+  if (hostName.includes("medium.com")) {
+    elements.push(document.querySelector("article"));
+  } else if (hostName.includes("wikipedia.org")) {
+    elements.push(document.querySelector("#bodyContent"));
+  }
+  elements.forEach((element) => {
+    const result = extractContent(
+      element,
+      ["toc"],
+      [
+        "infobox biota",
+        "thumb tright",
+        "mod-gallery mod-gallery-default mod-gallery-center",
+        "reflist reflist-columns references-column-width",
+        "navbox",
+      ]
+    );
 
-  function traverseNode(node) {
-    if (blackListedNodes.includes(node.tagName)) {
-      return;
+    contents.push(result);
+  });
+  return contents;
+}
+
+function extractContent(
+  element: HTMLElement,
+  blacklistedIds?: string[],
+  blackListedClasses?: string[]
+) {
+  const masterRecord = element.innerHTML;
+  let curatedRecord: string = masterRecord;
+  const trashArray = [];
+  const children = element.childNodes;
+
+  if (children.length > 0) {
+    children.forEach((childNode: HTMLElement) => traverseNode(childNode));
+  }
+
+  function traverseNode(childNode) {
+    const blackListedNodes = ["SCRIPT", "NOSCRIPT", "STYLE"];
+
+    if (blackListedNodes.includes(childNode.tagName)) {
+      trashArray.push(childNode.outerHTML);
+    }
+    if (blacklistedIds.includes(childNode.id)) {
+      trashArray.push(childNode.outerHTML);
+    }
+    if (blackListedClasses.includes(childNode.className)) {
+      trashArray.push(childNode.outerHTML);
     }
 
-    const childs = node.childNodes;
-    if (childs.length > 0) {
-      childs.forEach((childNode) => traverseNode(childNode));
-    }
-
-    if (node?.style) {
-    }
-
-    if (node.nodeType == Node.TEXT_NODE) {
-      const nodeText = `${node.textContent}`;
-
-      if (nodeText.length > 1) {
-        textArr.push(`${nodeText}`);
-
-        // @ts-ignore
-        // (node as HTMLElement).parentNode.style.border = borderStyle;
-      }
+    const children = childNode.childNodes;
+    if (children.length > 0) {
+      children.forEach((childNode) => traverseNode(childNode));
     }
   }
 
-  traverseNode(element);
-  return textArr.join("\n");
+  trashArray.forEach((string) => {
+    curatedRecord = curatedRecord.replace(string, "");
+  });
+
+  const regex = /(<([^>]+)>)/gi;
+
+  curatedRecord = curatedRecord.replace(regex, " ");
+  curatedRecord = curatedRecord.replace(/\t|\n/g, "");
+  curatedRecord = curatedRecord.replace(/  +/g, " ");
+  return curatedRecord;
 }
+
+// /(<([^>]+)>)/ig
+
+// /\t|\n/g
